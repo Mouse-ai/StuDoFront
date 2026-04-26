@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useClickOutside } from '../hooks/useClickOutside';
@@ -17,7 +16,6 @@ export function FloatingIsland() {
 
 	const toggleTooltip = () => setShowTooltip(prev => !prev);
 
-	// 🎨 Адаптивные классы для плавного появления и центрирования
 	const tooltipClasses = `
     fixed left-1/2 -translate-x-1/2 top-20 w-[92%] max-w-sm z-[60]
     sm:absolute sm:left-1/2 sm:-translate-x-1/2 sm:top-full sm:mt-3 sm:w-[340px] sm:max-w-none
@@ -26,7 +24,6 @@ export function FloatingIsland() {
     ${showTooltip ? 'max-h-[600px] opacity-100 scale-100 pointer-events-auto' : 'max-h-0 opacity-0 scale-95 pointer-events-none'}
 	`;
 
-	// 👤 Гостевая ветка
 	if (!isAuthenticated || !user) {
 		return (
 			<div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl">
@@ -59,7 +56,6 @@ export function FloatingIsland() {
 		);
 	}
 
-	// 🔐 Авторизованная ветка
 	const u = user;
 	return (
 		<div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl">

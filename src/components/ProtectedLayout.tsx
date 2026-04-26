@@ -25,7 +25,6 @@ export function ProtectedLayout() {
 
 	return (
 		<>
-			{/* 🖥 DESKTOP: Плавающий сайдбар */}
 			<aside className="hidden md:flex fixed left-4 top-4 bottom-4 w-64 bg-white/90 backdrop-blur-xl border border-gray-200/50 rounded-2xl shadow-xl p-4 flex-col z-40">
 				<button onClick={() => navigate('/')} className="flex items-center gap-3 mb-6 hover:opacity-80 transition cursor-pointer px-2">
 					<div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold shrink-0">S</div>
@@ -48,9 +47,7 @@ export function ProtectedLayout() {
 				</div>
 			</aside>
 
-			{/* 📱 MOBILE: Жёстко зафиксированная шапка */}
 			<div className="md:hidden fixed top-4 left-4 right-4 z-50 flex items-center gap-3 pointer-events-none">
-				{/* Иконка приложения (никогда не сдвигается) */}
 				<button
 					onClick={() => navigate('/')}
 					className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg pointer-events-auto active:scale-95 transition shrink-0"
@@ -59,7 +56,6 @@ export function ProtectedLayout() {
 					S
 				</button>
 
-				{/* Контейнер пилла + меню */}
 				<div ref={pillRef} className="flex-1 relative pointer-events-auto">
 					<button
 						onClick={() => setIsOpen(!isOpen)}
@@ -69,7 +65,6 @@ export function ProtectedLayout() {
 						<ChevronDown size={16} className={`text-gray-500 transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${isOpen ? 'rotate-180' : ''}`} />
 					</button>
 
-					{/* Выпадающее меню (абсолютное, не влияет на вёрстку) */}
 					<div className={`absolute top-full left-0 right-0 mt-2 overflow-hidden rounded-xl bg-white/90 backdrop-blur-xl border border-white/40 shadow-xl z-50 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${isOpen ? 'max-h-64 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-2 pointer-events-none'
 						}`}>
 						<nav className="p-2 space-y-1">
@@ -90,7 +85,6 @@ export function ProtectedLayout() {
 				</div>
 			</div>
 
-			{/* 📄 Основной контент */}
 			<main className="md:pl-72 px-4 pt-20 md:pt-6 pb-8 min-h-screen">
 				<Outlet />
 			</main>

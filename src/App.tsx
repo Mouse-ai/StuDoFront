@@ -18,7 +18,6 @@ function AnimatedRoutes() {
   return (
     <div key={location.pathname} className="relative min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50/40 text-gray-900">
       <Routes location={location}>
-        {/* Главная страница: всегда оригинальный FloatingIsland */}
         <Route path="/" element={
           <>
             <FloatingIsland />
@@ -26,7 +25,6 @@ function AnimatedRoutes() {
           </>
         } />
 
-        {/* Защищённые страницы: адаптивная навигация (Desktop sidebar / Mobile pill) */}
         <Route element={<ProtectedRoute />}>
           <Route element={<ProtectedLayout />}>
             <Route path="/tasks" element={<PageTransition><TasksPage /></PageTransition>} />

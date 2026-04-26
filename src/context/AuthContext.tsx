@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/set-state-in-effect */
-/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { apiFetch } from '../api/client';
 import type { User, RegisterRequest } from '../types';
@@ -38,7 +36,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		else setIsLoading(false);
 	}, []);
 
-	// 👈 Публичный метод для ручного обновления профиля
 	const refreshUser = async () => {
 		try {
 			const data = await apiFetch<User>('/api/Auth/me');

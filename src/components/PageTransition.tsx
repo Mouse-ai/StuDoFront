@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState, type ReactNode } from 'react';
 
 export function PageTransition({ children }: { children: ReactNode }) {

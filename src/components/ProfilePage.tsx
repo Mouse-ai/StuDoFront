@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Save, Loader2, Bell, Send, Globe } from 'lucide-react';
@@ -97,7 +95,6 @@ export function ProfilePage() {
 					</div>
 				</fieldset>
 
-				{/* 🔐 Безопасность */}
 				<fieldset className="space-y-4 pt-2 border-t border-gray-100">
 					<legend className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Безопасность</legend>
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -112,7 +109,6 @@ export function ProfilePage() {
 					</div>
 				</fieldset>
 
-				{/* 🔔 Уведомления и Telegram */}
 				<fieldset className="space-y-4 pt-2 border-t border-gray-100">
 					<legend className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Уведомления</legend>
 

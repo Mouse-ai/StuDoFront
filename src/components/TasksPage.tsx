@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect, useCallback } from 'react';
 import { apiFetch } from '../api/client';
 import type { Task, ChatMessage } from '../types';

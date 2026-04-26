@@ -12,7 +12,6 @@ export function DashboardLayout() {
 
 	return (
 		<>
-			{/* Плавающее левое меню */}
 			<aside className="fixed left-4 top-24 bottom-4 w-64 bg-white/90 backdrop-blur-xl border border-gray-200/50 rounded-2xl shadow-xl p-4 flex flex-col z-40 transition-all duration-300">
 				<nav className="flex-1 space-y-2">
 					{navItems.map(item => (
@@ -36,7 +35,6 @@ export function DashboardLayout() {
 				</div>
 			</aside>
 
-			{/* Основной контент (отступ слева под плавающее меню) */}
 			<main className="pl-72 pr-4 pt-24 pb-8 min-h-screen">
 				<Outlet />
 			</main>
