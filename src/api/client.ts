@@ -1,3 +1,5 @@
+import type { AdminOverview, AiUsageItem, RoleDistributionItem, TrendItem, User } from "../types";
+
 const IS_LOCALHOST = false;
 const PORT = 5245;
 const BASE_URL = IS_LOCALHOST ? `http://localhost:${PORT}` : 'https://studoback.up.railway.app';
@@ -26,4 +28,28 @@ export async function apiFetch<T>(endpoint: string, options: RequestInit = {}): 
 	} catch {
 		return text as unknown as T;
 	}
+}
+
+export async function getAiKey(): Promise<string> {
+	return apiFetch<string>('/api/Ai/key');
+}
+
+export async function getAdminUsers(search = '', page = 1, size = 20) {
+	return apiFetch<{ users: User[]; total: number; page: number; size: number }>(`/api/Admin/users?page=${page}&search=${search}&size=${size}`);
+}
+
+export async function getAdminOverview(): Promise<AdminOverview | null> {
+	return apiFetch('/api/Admin/analytics/overview');
+}
+
+export async function getAdminTasksTrend(days = 7): Promise<TrendItem[]> {
+	return apiFetch(`/api/Admin/analytics/tasks-trend?days=${days}`);
+}
+
+export async function getAdminAiUsage(days = 7): Promise<AiUsageItem[]> {
+	return apiFetch(`/api/Admin/analytics/ai-usage?days=${days}`);
+}
+
+export async function getAdminRoles(): Promise<RoleDistributionItem[]> {
+	return apiFetch('/api/Admin/analytics/roles');
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { apiFetch } from '../api/client';
+import { apiFetch, getAiKey } from '../api/client';
 import type { Task, ChatMessage } from '../types';
 import { Send, Plus, Trash2, Calendar, CheckCircle, Loader2 } from 'lucide-react';
 
@@ -8,7 +8,21 @@ const TASKS_URL = '/api/Tasks';
 export function TasksPage() {
 	const [tasks, setTasks] = useState<Task[]>([]);
 	const [loading, setLoading] = useState(true);
-	const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY || '';
+	const [apiKey, setApiKey] = useState<string>('');
+
+	useEffect(() => {
+		let mounted = true;
+		const fetchKey = async () => {
+			try {
+				const key = await getAiKey();
+				if (mounted) setApiKey(key);
+			} catch {
+				if (mounted) setApiKey(import.meta.env.VITE_OPENROUTER_API_KEY || '');
+			}
+		};
+		fetchKey();
+		return () => { mounted = false; };
+	}, []);
 
 	const loadTasks = useCallback(async () => {
 		try {

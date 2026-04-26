@@ -1,8 +1,8 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useClickOutside } from '../hooks/useClickOutside';
 import { useNavigate } from 'react-router-dom';
-import { User, LogOut, ChevronDown, ArrowRight, Mail, Lock } from 'lucide-react';
+import { User, LogOut, ChevronDown, ArrowRight, Mail, Lock, LayoutDashboard } from 'lucide-react';
 import type { AuthTab } from '../types';
 
 export function FloatingIsland() {
@@ -10,19 +10,27 @@ export function FloatingIsland() {
 	const navigate = useNavigate();
 	const [showTooltip, setShowTooltip] = useState(false);
 	const [activeTab, setActiveTab] = useState<AuthTab>('login');
+	const [formHeight, setFormHeight] = useState(280);
 	const containerRef = useRef<HTMLDivElement>(null);
+	const formContainerRef = useRef<HTMLDivElement>(null);
 
 	useClickOutside(containerRef, () => setShowTooltip(false));
 
 	const toggleTooltip = () => setShowTooltip(prev => !prev);
 
+	useEffect(() => {
+		if (formContainerRef.current && showTooltip) {
+			setFormHeight(formContainerRef.current.scrollHeight);
+		}
+	}, [activeTab, showTooltip]);
+
 	const tooltipClasses = `
     fixed left-1/2 -translate-x-1/2 top-20 w-[92%] max-w-sm z-[60]
     sm:absolute sm:left-1/2 sm:-translate-x-1/2 sm:top-full sm:mt-3 sm:w-[340px] sm:max-w-none
     origin-top transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
-    rounded-2xl border border-gray-200 bg-white shadow-xl overflow-hidden
-    ${showTooltip ? 'max-h-[600px] opacity-100 scale-100 pointer-events-auto' : 'max-h-0 opacity-0 scale-95 pointer-events-none'}
-	`;
+    rounded-2xl border border-gray-200 bg-white shadow-xl
+    ${showTooltip ? 'grid grid-rows-[1fr] opacity-100 scale-100 pointer-events-auto' : 'grid grid-rows-[0fr] opacity-0 scale-95 pointer-events-none'}
+  `;
 
 	if (!isAuthenticated || !user) {
 		return (
@@ -39,16 +47,20 @@ export function FloatingIsland() {
 						</button>
 
 						<div className={tooltipClasses}>
-							{showTooltip && (
+							<div className="min-h-0 overflow-hidden">
 								<div className="p-4">
 									<div className="relative flex bg-gray-100 rounded-xl p-1 mb-4">
-										<div className={`absolute inset-y-1 left-1 w-[calc(50%-8px)] bg-white rounded-lg shadow-sm transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${activeTab === 'login' ? 'translate-x-0' : 'translate-x-full'}`} />
+										<div className={`absolute inset-y-1 left-1 w-[calc(50%-8px)] bg-white rounded-lg shadow-sm transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${activeTab === 'login' ? 'translate-x-0' : 'translate-x-[calc(100%+8px)]'}`} />
 										<button onClick={() => setActiveTab('login')} className={`relative z-10 flex-1 py-2 text-sm font-medium transition-colors duration-300 ${activeTab === 'login' ? 'text-gray-900 font-semibold' : 'text-gray-500 hover:text-gray-700'}`}>Вход</button>
 										<button onClick={() => setActiveTab('register')} className={`relative z-10 flex-1 py-2 text-sm font-medium transition-colors duration-300 ${activeTab === 'register' ? 'text-gray-900 font-semibold' : 'text-gray-500 hover:text-gray-700'}`}>Регистрация</button>
 									</div>
-									<AuthForm activeTab={activeTab} onSubmit={activeTab === 'login' ? login : register} />
+									<div style={{ height: formHeight }} className="overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]">
+										<div ref={formContainerRef}>
+											<AuthForm activeTab={activeTab} onSubmit={activeTab === 'login' ? login : register} />
+										</div>
+									</div>
 								</div>
-							)}
+							</div>
 						</div>
 					</div>
 				</div>
@@ -57,6 +69,8 @@ export function FloatingIsland() {
 	}
 
 	const u = user;
+	const isAdmin = u.role === 'admin';
+
 	return (
 		<div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl">
 			<div className="flex items-center justify-between px-5 py-3 bg-white/80 backdrop-blur-md border border-gray-200/60 rounded-2xl shadow-lg shadow-indigo-100/50">
@@ -75,17 +89,27 @@ export function FloatingIsland() {
 					</button>
 
 					<div className={tooltipClasses}>
-						{showTooltip && (
+						<div className="min-h-0 overflow-hidden">
 							<div className="py-2">
 								<div className="px-4 py-3 border-b border-gray-100">
 									<p className="font-medium text-gray-800">{u.name} {u.surname}</p>
 									<p className="text-xs text-gray-500 truncate">{u.email}</p>
 								</div>
-								<button onClick={() => navigate('/tasks')} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50 transition text-gray-700">Перейти к задачам</button>
-								<button onClick={() => navigate('/profile')} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50 transition text-gray-700">Профиль</button>
-								<button onClick={() => { logout(); navigate('/'); }} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-red-50 transition text-red-600 border-t border-gray-100 mt-1"><LogOut size={16} /> Выйти</button>
+
+								{isAdmin ? (
+									<button onClick={() => navigate('/admin')} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50 transition text-gray-700">
+										<LayoutDashboard size={16} /> Админ-панель
+									</button>
+								) : (
+									<button onClick={() => navigate('/student/tasks')} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50 transition text-gray-700">Перейти к задачам</button>
+								)}
+
+								<button onClick={() => navigate(isAdmin ? '/admin/profile' : '/student/profile')} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50 transition text-gray-700">Профиль</button>
+								<button onClick={() => { logout(); navigate('/'); }} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-red-50 transition text-red-600 border-t border-gray-100 mt-1">
+									<LogOut size={16} /> Выйти
+								</button>
 							</div>
-						)}
+						</div>
 					</div>
 				</div>
 			</div>
@@ -94,7 +118,7 @@ export function FloatingIsland() {
 }
 
 function AuthForm({ activeTab, onSubmit }: { activeTab: AuthTab; onSubmit: any }) {
-	const [form, setForm] = useState({ email: '', password: '', name: '', surname: '', patronym: '', birth_date: '' });
+	const [form, setForm] = useState({ email: '', password: '', name: '', surname: '', patronym: '', birthDate: '' });
 	const [error, setError] = useState('');
 	const [loading, setLoading] = useState(false);
 
@@ -103,7 +127,7 @@ function AuthForm({ activeTab, onSubmit }: { activeTab: AuthTab; onSubmit: any }
 		try {
 			const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 			if (activeTab === 'login') await onSubmit(form.email, form.password);
-			else await onSubmit({ ...form, birth_date: form.birth_date || null, patronym: form.patronym || null, timezone });
+			else await onSubmit({ ...form, birthDate: form.birthDate || null, patronym: form.patronym || null, timezone });
 		} catch (err: any) { setError(err.message || 'Ошибка'); }
 		finally { setLoading(false); }
 	};
@@ -112,17 +136,17 @@ function AuthForm({ activeTab, onSubmit }: { activeTab: AuthTab; onSubmit: any }
 		<form onSubmit={handleSubmit} className="space-y-3">
 			{activeTab === 'register' && (
 				<div className="grid grid-cols-2 gap-2">
-					<input required placeholder="Фамилия" className="p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-300 transition" value={form.surname} onChange={e => setForm({ ...form, surname: e.target.value })} />
-					<input required placeholder="Имя" className="p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-300 transition" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
-					<input placeholder="Отчество" className="p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-300 transition" value={form.patronym} onChange={e => setForm({ ...form, patronym: e.target.value })} />
-					<input type="date" className="p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-300 transition" value={form.birth_date} onChange={e => setForm({ ...form, birth_date: e.target.value })} />
+					<input required placeholder="Фамилия" className="p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/40 focus:border-indigo-300 transition" value={form.surname} onChange={e => setForm({ ...form, surname: e.target.value })} />
+					<input required placeholder="Имя" className="p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/40 focus:border-indigo-300 transition" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
+					<input placeholder="Отчество" className="p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/40 focus:border-indigo-300 transition" value={form.patronym} onChange={e => setForm({ ...form, patronym: e.target.value })} />
+					<input type="date" className="p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/40 focus:border-indigo-300 transition" value={form.birthDate} onChange={e => setForm({ ...form, birthDate: e.target.value })} />
 				</div>
 			)}
-			<div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 focus-within:ring-2 focus-within:ring-indigo-500/30 focus-within:border-indigo-300 transition">
+			<div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 focus-within:ring-1 focus-within:ring-indigo-500/40 focus-within:border-indigo-300 transition">
 				<Mail size={16} className="text-gray-400" />
 				<input required type="email" placeholder="Email" className="w-full p-2.5 text-sm bg-transparent outline-none" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
 			</div>
-			<div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 focus-within:ring-2 focus-within:ring-indigo-500/30 focus-within:border-indigo-300 transition">
+			<div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 focus-within:ring-1 focus-within:ring-indigo-500/40 focus-within:border-indigo-300 transition">
 				<Lock size={16} className="text-gray-400" />
 				<input required type="password" placeholder="Пароль" className="w-full p-2.5 text-sm bg-transparent outline-none" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} />
 			</div>

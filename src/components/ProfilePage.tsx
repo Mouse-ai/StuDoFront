@@ -72,23 +72,23 @@ export function ProfilePage() {
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 						<div className="space-y-1">
 							<label className="text-sm font-medium text-gray-700">Фамилия</label>
-							<input required className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 min-h-[44px]" value={form.surname || ''} onChange={e => setForm({ ...form, surname: e.target.value })} />
+							<input required className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/40 focus:border-indigo-300 min-h-[44px]" value={form.surname || ''} onChange={e => setForm({ ...form, surname: e.target.value })} />
 						</div>
 						<div className="space-y-1">
 							<label className="text-sm font-medium text-gray-700">Имя</label>
-							<input required className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 min-h-[44px]" value={form.name || ''} onChange={e => setForm({ ...form, name: e.target.value })} />
+							<input required className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/40 focus:border-indigo-300 min-h-[44px]" value={form.name || ''} onChange={e => setForm({ ...form, name: e.target.value })} />
 						</div>
 						<div className="space-y-1">
 							<label className="text-sm font-medium text-gray-700">Отчество</label>
-							<input className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 min-h-[44px]" value={form.patronym || ''} onChange={e => setForm({ ...form, patronym: e.target.value })} />
+							<input className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/40 focus:border-indigo-300 min-h-[44px]" value={form.patronym || ''} onChange={e => setForm({ ...form, patronym: e.target.value })} />
 						</div>
 						<div className="space-y-1">
 							<label className="text-sm font-medium text-gray-700">Дата рождения</label>
-							<input type="date" className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 min-h-[44px]" value={form.birthDate || ''} onChange={e => setForm({ ...form, birthDate: e.target.value })} />
+							<input type="date" className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/40 focus:border-indigo-300 min-h-[44px]" value={form.birthDate || ''} onChange={e => setForm({ ...form, birthDate: e.target.value })} />
 						</div>
 						<div className="space-y-1 sm:col-span-2">
 							<label className="text-sm font-medium text-gray-700 flex items-center gap-2"><Globe size={14} /> Часовой пояс</label>
-							<select className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 min-h-[44px]" value={form.timezone || ''} onChange={e => setForm({ ...form, timezone: e.target.value })}>
+							<select className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/40 focus:border-indigo-300 min-h-[44px]" value={form.timezone || ''} onChange={e => setForm({ ...form, timezone: e.target.value })}>
 								{getTimezones().map(tz => <option key={tz} value={tz}>{tz.replace(/_/g, ' ')}</option>)}
 							</select>
 						</div>
@@ -100,11 +100,11 @@ export function ProfilePage() {
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 						<div className="space-y-1">
 							<label className="text-sm font-medium text-gray-700">Email</label>
-							<input type="email" required className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 min-h-[44px]" value={form.email || ''} onChange={e => setForm({ ...form, email: e.target.value })} />
+							<input type="email" required className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/40 focus:border-indigo-300 min-h-[44px]" value={form.email || ''} onChange={e => setForm({ ...form, email: e.target.value })} />
 						</div>
 						<div className="space-y-1">
 							<label className="text-sm font-medium text-gray-700">Новый пароль</label>
-							<input type="password" placeholder="Оставьте пустым" className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 min-h-[44px]" value={form.password || ''} onChange={e => setForm({ ...form, password: e.target.value })} />
+							<input type="password" placeholder="Оставьте пустым" className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/40 focus:border-indigo-300 min-h-[44px]" value={form.password || ''} onChange={e => setForm({ ...form, password: e.target.value })} />
 						</div>
 					</div>
 				</fieldset>
@@ -122,7 +122,7 @@ export function ProfilePage() {
 						</div>
 						<label className="relative inline-flex items-center cursor-pointer shrink-0">
 							<input type="checkbox" className="sr-only peer" checked={form.notifications} onChange={e => setForm({ ...form, notifications: e.target.checked })} />
-							<div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+							<div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-1 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
 						</label>
 					</div>
 
@@ -132,7 +132,7 @@ export function ProfilePage() {
 						</label>
 						<div className="flex items-center gap-2">
 							<span className="text-gray-400 text-sm pl-2">@</span>
-							<input placeholder="username" className="flex-1 p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 min-h-[44px]" value={form.tgUsername || ''} onChange={e => setForm({ ...form, tgUsername: e.target.value.replace('@', '') })} />
+							<input placeholder="username" className="flex-1 p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/40 focus:border-indigo-300 min-h-[44px]" value={form.tgUsername || ''} onChange={e => setForm({ ...form, tgUsername: e.target.value.replace('@', '') })} />
 						</div>
 					</div>
 				</fieldset>

@@ -1,3 +1,5 @@
+export type UserRole = 'student' | 'admin'
+
 export interface User {
 	id: string;
 	email: string;
@@ -8,6 +10,7 @@ export interface User {
 	notifications: boolean;
 	tgUsername?: string;
 	timezone: string;
+	role: UserRole
 }
 
 export interface ChatMessage {
@@ -54,4 +57,27 @@ export interface UpdateProfileRequest {
 	notifications?: boolean;
 	tgUsername?: string | null;
 	timezone: string;
+}
+
+export interface AdminOverview {
+	totalUsers: number;
+	activeTasks: number;
+	aiRequestsToday: number;
+	completionRate: number;
+}
+
+export interface TrendItem {
+	date: string;
+	value: number;
+}
+
+export interface AiUsageItem {
+	date: string;
+	requests: number;
+	tokens: number;
+}
+
+export interface RoleDistributionItem {
+	name: string;
+	value: number;
 }
