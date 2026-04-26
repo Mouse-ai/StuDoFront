@@ -30,9 +30,36 @@ export async function apiFetch<T>(endpoint: string, options: RequestInit = {}): 
 	}
 }
 
+
+
 export async function getAiKey(): Promise<string> {
 	return apiFetch<string>('/api/Ai/key');
 }
+
+export async function getAiModel() {
+	return apiFetch<string>('/api/Ai/model');
+}
+
+// Логирование запроса к ИИ для аналитики
+export async function logAiRequest(data: {
+	model: string;
+	promptTokens?: number;
+	completionTokens?: number;
+	totalTokens?: number;
+	status: 'success' | 'error';
+	errorMessage?: string;
+}) {
+	try {
+		await apiFetch('/api/Ai/log', {
+			method: 'POST',
+			body: JSON.stringify(data)
+		});
+	} catch {
+		console.warn('Failed to log AI request');
+	}
+}
+
+
 
 export async function getAdminUsers(search = '', page = 1, size = 20) {
 	return apiFetch<{ users: User[]; total: number; page: number; size: number }>(`/api/Admin/users?page=${page}&search=${search}&size=${size}`);

@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import { apiFetch, getAiKey } from '../api/client';
+import { apiFetch, logAiRequest } from '../api/client';
 import type { Task, ChatMessage } from '../types';
-import { Send, Plus, Trash2, Calendar, CheckCircle, Loader2 } from 'lucide-react';
+import { Send, Plus, Trash2, Calendar, CheckCircle, Loader2, Sparkles } from 'lucide-react';
+import { AiTaskCreator } from './AiTaskCreator';
 
 const TASKS_URL = '/api/Tasks';
 
@@ -9,12 +10,13 @@ export function TasksPage() {
 	const [tasks, setTasks] = useState<Task[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [apiKey, setApiKey] = useState<string>('');
+	const [isAiOpen, setIsAiOpen] = useState(false);
 
 	useEffect(() => {
 		let mounted = true;
 		const fetchKey = async () => {
 			try {
-				const key = await getAiKey();
+				const key = await apiFetch<string>('/api/Ai/key');
 				if (mounted) setApiKey(key);
 			} catch {
 				if (mounted) setApiKey(import.meta.env.VITE_OPENROUTER_API_KEY || '');
@@ -93,12 +95,7 @@ export function TasksPage() {
 		try {
 			const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'Authorization': `Bearer ${apiKey}`,
-					'HTTP-Referer': window.location.origin,
-					'X-Title': 'StuDo'
-				},
+				headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}`, 'HTTP-Referer': window.location.origin, 'X-Title': 'StuDo' },
 				body: JSON.stringify({
 					model: 'meta-llama/llama-3.3-70b-instruct',
 					messages: [
@@ -109,8 +106,24 @@ export function TasksPage() {
 			});
 			const data = await res.json();
 			const reply = data.choices?.[0]?.message?.content || 'Ошибка ИИ.';
+
+			if (data.usage) {
+				logAiRequest({
+					model: 'meta-llama/llama-3.3-70b-instruct',
+					promptTokens: data.usage.prompt_tokens,
+					completionTokens: data.usage.completion_tokens,
+					totalTokens: data.usage.total_tokens,
+					status: 'success'
+				});
+			}
+
 			saveLocal(tasks.map(t => t.id === taskId ? { ...t, chatHistory: [...updatedHistory, { id: crypto.randomUUID(), role: 'assistant', content: reply }] } : t));
-		} catch {
+		} catch (err: any) {
+			logAiRequest({
+				model: 'meta-llama/llama-3.3-70b-instruct',
+				status: 'error',
+				errorMessage: err.message
+			});
 			saveLocal(tasks.map(t => t.id === taskId ? { ...t, chatHistory: [...updatedHistory, { id: crypto.randomUUID(), role: 'assistant', content: 'Сеть недоступна.' }] } : t));
 		}
 	};
@@ -121,9 +134,14 @@ export function TasksPage() {
 		<div className="max-w-5xl mx-auto space-y-6">
 			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
 				<h2 className="text-xl sm:text-2xl font-bold">📋 Мои задачи</h2>
-				<button onClick={addTask} className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium flex items-center justify-center gap-2 transition shadow-md shadow-indigo-200/50 min-h-[44px]">
-					<Plus size={16} /> Добавить задачу
-				</button>
+				<div className="flex gap-2">
+					<button onClick={() => setIsAiOpen(true)} className="px-4 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl text-sm font-medium flex items-center justify-center gap-2 transition shadow-md shadow-indigo-200/50 min-h-[44px]">
+						<Sparkles size={16} /> AI Task
+					</button>
+					<button onClick={addTask} className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium flex items-center justify-center gap-2 transition shadow-md shadow-indigo-200/50 min-h-[44px]">
+						<Plus size={16} /> Добавить
+					</button>
+				</div>
 			</div>
 
 			{tasks.length === 0 && (
@@ -162,6 +180,8 @@ export function TasksPage() {
 					</div>
 				))}
 			</div>
+
+			<AiTaskCreator isOpen={isAiOpen} onClose={() => setIsAiOpen(false)} onTaskCreated={loadTasks} />
 		</div>
 	);
 }
@@ -173,7 +193,7 @@ function ChatInput({ onSend, disabled }: { onSend: (t: string) => void; disabled
 			<input
 				type="text"
 				placeholder="Спросить ИИ..."
-				className="flex-1 p-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 min-h-[40px]"
+				className="flex-1 p-2.5 border rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/40 focus:border-indigo-300 min-h-[40px]"
 				value={val}
 				onChange={e => setVal(e.target.value)}
 				onKeyDown={e => e.key === 'Enter' && (onSend(val), setVal(''))}
