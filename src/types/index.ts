@@ -4,9 +4,9 @@ export interface User {
 	name: string;
 	surname: string;
 	patronym?: string;
-	birth_date?: string;
+	birthDate?: string;
 	notifications: boolean;
-	tg_username?: string;
+	tgUsername?: string;
 	timezone: string;
 }
 
@@ -36,11 +36,11 @@ export interface RegisterRequest {
 	surname: string;
 	name: string;
 	patronym: string;
-	birth_date: string;
+	birthDate: string;
 	email: string;
 	password: string;
 	notifications?: boolean;
-	tg_username?: string;
+	tgUsername?: string;
 	timezone: string;
 }
 
@@ -48,10 +48,10 @@ export interface UpdateProfileRequest {
 	surname?: string;
 	name?: string;
 	patronym?: string | null;
-	birth_date?: string | null;
+	birthDate?: string | null;
 	email?: string;
 	password?: string;
 	notifications?: boolean;
-	tg_username?: string | null;
+	tgUsername?: string | null;
 	timezone: string;
 }

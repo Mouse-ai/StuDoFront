@@ -12,8 +12,8 @@ const getTimezones = () => {
 export function ProfilePage() {
 	const { user, refreshUser } = useAuth();
 	const [form, setForm] = useState<UpdateProfileRequest>({
-		surname: '', name: '', patronym: '', birth_date: '',
-		email: '', password: '', notifications: false, tg_username: '',
+		surname: '', name: '', patronym: '', birthDate: '',
+		email: '', password: '', notifications: false, tgUsername: '',
 		timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
 	});
 	const [loading, setLoading] = useState(false);
@@ -26,11 +26,11 @@ export function ProfilePage() {
 				surname: user.surname || '',
 				name: user.name || '',
 				patronym: user.patronym || '',
-				birth_date: user.birth_date || '',
+				birthDate: user.birthDate || '',
 				email: user.email || '',
 				password: '',
 				notifications: user.notifications ?? false,
-				tg_username: user.tg_username || '',
+				tgUsername: user.tgUsername || '',
 				timezone: user.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone
 			});
 		}
@@ -44,8 +44,8 @@ export function ProfilePage() {
 			const payload: UpdateProfileRequest = {
 				...userData,
 				patronym: userData.patronym || null,
-				birth_date: userData.birth_date || null,
-				tg_username: userData.tg_username?.trim() || null,
+				birthDate: userData.birthDate || null,
+				tgUsername: userData.tgUsername?.trim() || null,
 				password: password && password.length > 0 ? password : undefined,
 				timezone: form.timezone
 			};
@@ -84,7 +84,7 @@ export function ProfilePage() {
 						</div>
 						<div className="space-y-1">
 							<label className="text-sm font-medium text-gray-700">Дата рождения</label>
-							<input type="date" className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 min-h-[44px]" value={form.birth_date || ''} onChange={e => setForm({ ...form, birth_date: e.target.value })} />
+							<input type="date" className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 min-h-[44px]" value={form.birthDate || ''} onChange={e => setForm({ ...form, birthDate: e.target.value })} />
 						</div>
 						<div className="space-y-1 sm:col-span-2">
 							<label className="text-sm font-medium text-gray-700 flex items-center gap-2"><Globe size={14} /> Часовой пояс</label>
@@ -132,7 +132,7 @@ export function ProfilePage() {
 						</label>
 						<div className="flex items-center gap-2">
 							<span className="text-gray-400 text-sm pl-2">@</span>
-							<input placeholder="username" className="flex-1 p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 min-h-[44px]" value={form.tg_username || ''} onChange={e => setForm({ ...form, tg_username: e.target.value.replace('@', '') })} />
+							<input placeholder="username" className="flex-1 p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 min-h-[44px]" value={form.tgUsername || ''} onChange={e => setForm({ ...form, tgUsername: e.target.value.replace('@', '') })} />
 						</div>
 					</div>
 				</fieldset>
