@@ -91,7 +91,7 @@ export function ProtectedLayout() {
 			</div>
 
 			{/* 📄 Основной контент */}
-			<main className="md:pl-72 pl-4 pt-20 md:pt-6 pb-8 min-h-screen">
+			<main className="md:pl-72 px-4 pt-20 md:pt-6 pb-8 min-h-screen">
 				<Outlet />
 			</main>
 		</>
