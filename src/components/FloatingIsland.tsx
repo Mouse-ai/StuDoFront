@@ -17,16 +17,17 @@ export function FloatingIsland() {
 
 	const toggleTooltip = () => setShowTooltip(prev => !prev);
 
-	// Общие классы для тултипа (адаптивные)
+	// 🎨 Адаптивные классы для плавного появления и центрирования
 	const tooltipClasses = `
-    fixed left-1/2 -translate-x-1/2 top-20 w-[340px] max-w-[calc(100vw-2rem)] z-40
-    sm:absolute sm:left-1/2 sm:-translate-x-1/2 sm:top-full sm:mt-3 sm:z-auto
-    origin-top transition-all duration-300 ease-out rounded-2xl border border-gray-200 bg-white shadow-xl overflow-hidden
+    fixed left-1/2 -translate-x-1/2 top-20 w-[92%] max-w-sm z-[60]
+    sm:absolute sm:left-1/2 sm:-translate-x-1/2 sm:top-full sm:mt-3 sm:w-[340px] sm:max-w-none
+    origin-top transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
+    rounded-2xl border border-gray-200 bg-white shadow-xl overflow-hidden
     ${showTooltip ? 'max-h-[600px] opacity-100 scale-100 pointer-events-auto' : 'max-h-0 opacity-0 scale-95 pointer-events-none'}
-  `;
+	`;
 
-	// Гостевая ветка
-	if (!isAuthenticated && !user) {
+	// 👤 Гостевая ветка
+	if (!isAuthenticated || !user) {
 		return (
 			<div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl">
 				<div className="flex items-center justify-between px-5 py-3 bg-white/80 backdrop-blur-md border border-gray-200/60 rounded-2xl shadow-lg shadow-indigo-100/50">
@@ -58,8 +59,8 @@ export function FloatingIsland() {
 		);
 	}
 
-	// Авторизованная ветка
-	const u = user!;
+	// 🔐 Авторизованная ветка
+	const u = user;
 	return (
 		<div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl">
 			<div className="flex items-center justify-between px-5 py-3 bg-white/80 backdrop-blur-md border border-gray-200/60 rounded-2xl shadow-lg shadow-indigo-100/50">
@@ -85,6 +86,7 @@ export function FloatingIsland() {
 									<p className="text-xs text-gray-500 truncate">{u.email}</p>
 								</div>
 								<button onClick={() => navigate('/tasks')} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50 transition text-gray-700">Перейти к задачам</button>
+								<button onClick={() => navigate('/profile')} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50 transition text-gray-700">Профиль</button>
 								<button onClick={() => { logout(); navigate('/'); }} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-red-50 transition text-red-600 border-t border-gray-100 mt-1"><LogOut size={16} /> Выйти</button>
 							</div>
 						)}
