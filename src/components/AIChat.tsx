@@ -7,7 +7,7 @@ export function AIChat() {
 	const [input, setInput] = useState('');
 	const [loading, setLoading] = useState(false);
 
-	const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY || '';
+	const apiKey = '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';
 
 	const sendMessage = async () => {
 		if (!input.trim() || loading) return;

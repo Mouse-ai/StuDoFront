@@ -73,9 +73,9 @@ export function TasksPage() {
 		try {
 			const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}`, 'HTTP-Referer': window.location.origin, 'X-Title': 'StuDo' },
+				headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer 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`, 'HTTP-Referer': window.location.origin, 'X-Title': 'StuDo' },
 				body: JSON.stringify({
-					model: 'meta-llama/llama-3.3-70b-instruct',
+					model: 'google/gemma-4-26b-a4b-it:free',
 					messages: [
 						{ role: 'system', content: `Ты учебный ассистент для задачи "${task.title}" (предмет: ${task.subject}). Отвечай кратко, используй контекст переписки.` },
 						...updatedHistory.map(m => ({ role: m.role, content: m.content }))
@@ -83,6 +83,7 @@ export function TasksPage() {
 				})
 			});
 			const data = await res.json();
+			console.log(data);
 			const reply = data.choices?.[0]?.message?.content || 'Ошибка ИИ.';
 			saveLocal(tasks.map(t => t.id === taskId ? { ...t, chatHistory: [...updatedHistory, { id: crypto.randomUUID(), role: 'assistant', content: reply }] } : t));
 		} catch {
