@@ -17,11 +17,19 @@ export function FloatingIsland() {
 
 	const toggleTooltip = () => setShowTooltip(prev => !prev);
 
+	// Общие классы для тултипа (адаптивные)
+	const tooltipClasses = `
+    fixed left-1/2 -translate-x-1/2 top-20 w-[340px] max-w-[calc(100vw-2rem)] z-40
+    sm:absolute sm:left-1/2 sm:-translate-x-1/2 sm:top-full sm:mt-3 sm:z-auto
+    origin-top transition-all duration-300 ease-out rounded-2xl border border-gray-200 bg-white shadow-xl overflow-hidden
+    ${showTooltip ? 'max-h-[600px] opacity-100 scale-100 pointer-events-auto' : 'max-h-0 opacity-0 scale-95 pointer-events-none'}
+  `;
+
+	// Гостевая ветка
 	if (!isAuthenticated && !user) {
 		return (
 			<div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl">
 				<div className="flex items-center justify-between px-5 py-3 bg-white/80 backdrop-blur-md border border-gray-200/60 rounded-2xl shadow-lg shadow-indigo-100/50">
-					{/* Логотип с навигацией на главную */}
 					<button onClick={() => navigate('/')} className="flex items-center gap-3 hover:opacity-80 transition cursor-pointer focus:outline-none">
 						<div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold">S</div>
 						<h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-blue-500">StuDo</h1>
@@ -31,8 +39,8 @@ export function FloatingIsland() {
 						<button onClick={toggleTooltip} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition text-sm font-medium shadow-md shadow-indigo-200">
 							<User size={16} /> Войти
 						</button>
-						<div className={`absolute left-1/2 -translate-x-1/2 top-full mt-3 w-[340px] max-w-[calc(100vw-2rem)] origin-top transition-all duration-300 ease-out rounded-2xl border border-gray-200 bg-white shadow-xl overflow-hidden ${showTooltip ? 'max-h-[600px] opacity-100 scale-100 pointer-events-auto' : 'max-h-0 opacity-0 scale-95 pointer-events-none'
-							}`}>
+
+						<div className={tooltipClasses}>
 							{showTooltip && (
 								<div className="p-4">
 									<div className="relative flex bg-gray-100 rounded-xl p-1 mb-4">
@@ -50,11 +58,11 @@ export function FloatingIsland() {
 		);
 	}
 
+	// Авторизованная ветка
 	const u = user!;
 	return (
 		<div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl">
 			<div className="flex items-center justify-between px-5 py-3 bg-white/80 backdrop-blur-md border border-gray-200/60 rounded-2xl shadow-lg shadow-indigo-100/50">
-				{/* Логотип с навигацией на главную */}
 				<button onClick={() => navigate('/')} className="flex items-center gap-3 hover:opacity-80 transition cursor-pointer focus:outline-none">
 					<div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold">S</div>
 					<h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-blue-500">StuDo</h1>
@@ -69,8 +77,7 @@ export function FloatingIsland() {
 						<ChevronDown size={14} className={`text-gray-400 transition-transform duration-300 ${showTooltip ? 'rotate-180' : ''}`} />
 					</button>
 
-					<div className={`absolute left-1/2 -translate-x-1/2 top-full mt-3 w-[340px] max-w-[calc(100vw-2rem)] origin-top transition-all duration-300 ease-out rounded-2xl border border-gray-200 bg-white shadow-xl overflow-hidden ${showTooltip ? 'max-h-[600px] opacity-100 scale-100 pointer-events-auto' : 'max-h-0 opacity-0 scale-95 pointer-events-none'
-						}`}>
+					<div className={tooltipClasses}>
 						{showTooltip && (
 							<div className="py-2">
 								<div className="px-4 py-3 border-b border-gray-100">
@@ -88,7 +95,6 @@ export function FloatingIsland() {
 	);
 }
 
-// AuthForm остался без изменений (можно скопировать из предыдущего сообщения)
 function AuthForm({ activeTab, onSubmit }: { activeTab: AuthTab; onSubmit: any }) {
 	const [form, setForm] = useState({ email: '', password: '', name: '', surname: '', patronym: '', birthday: '' });
 	const [error, setError] = useState('');

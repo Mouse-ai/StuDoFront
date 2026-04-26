@@ -66,9 +66,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 				surname: data.surname,
 				name: data.name,
 				patronym: data.patronym || null,
-				birthday: data.birthday || null,
+				birth_date: data.birth_date || null, // 👈 Исправлено
 				email: data.email,
-				password: data.password
+				password: data.password,
+				notifications: data.notifications,
+				tg_username: data.tg_username || null
 			})
 		});
 		const token = typeof res === 'string' ? res : (res?.token || res?.accessToken);
