@@ -47,7 +47,7 @@ export function LandingPage() {
           ))}
         </div>
       </section>
-      <!-- ⚡ Ключевые возможности -->
+      {/* ⚡ Ключевые возможности */}
       <section className="mb-20 bg-gradient-to-br from-gray-50 to-indigo-50/30 rounded-3xl p-8 md:p-12">
         <h2 className="text-2xl md:text-3xl font-bold text-center mb-10">Почему студенты выбирают StuDo?</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
