@@ -7,7 +7,7 @@ export function AIChat() {
 	const [input, setInput] = useState('');
 	const [loading, setLoading] = useState(false);
 
-	const apiKey = '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';
+	const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY || '';
 
 	const sendMessage = async () => {
 		if (!input.trim() || loading) return;
@@ -26,7 +26,7 @@ export function AIChat() {
 					'X-Title': 'StuDo'
 				},
 				body: JSON.stringify({
-					model: 'meta-llama/llama-3.3-70b-instruct',
+					model: 'google/gemma-4-26b-a4b-it:free',
 					messages: [
 						{ role: 'system', content: 'Ты учебный ассистент. Помогай студентам планировать задачи, объяснять материал и мотивировать. Отвечай кратко и по делу.' },
 						...messages.map(m => ({ role: m.role, content: m.content })),

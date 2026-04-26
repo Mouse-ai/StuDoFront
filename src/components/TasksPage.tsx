@@ -71,9 +71,10 @@ export function TasksPage() {
 		saveLocal(tasks.map(t => t.id === taskId ? { ...t, chatHistory: updatedHistory } : t));
 
 		try {
+			const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY || ''
 			const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer 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`, 'HTTP-Referer': window.location.origin, 'X-Title': 'StuDo' },
+				headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}`, 'HTTP-Referer': window.location.origin, 'X-Title': 'StuDo' },
 				body: JSON.stringify({
 					model: 'google/gemma-4-26b-a4b-it:free',
 					messages: [
