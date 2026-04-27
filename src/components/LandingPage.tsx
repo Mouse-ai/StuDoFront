@@ -19,7 +19,7 @@ export function LandingPage() {
           прогресс считается автоматически, а напоминания приходят прямо в Telegram.
         </p>
         <button
-          onClick={() => navigate('/tasks')}
+          onClick={() => navigate('/student/tasks')}
           className="inline-flex items-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold shadow-lg shadow-indigo-200/50 transition transform hover:scale-105"
         >
           Начать бесплатно <ArrowRight size={18} />
@@ -110,7 +110,7 @@ export function LandingPage() {
           Перенесите все задачи в одно место. Пусть AI планирует, а вы — учитесь.
         </p>
         <button
-          onClick={() => navigate('/tasks')}
+          onClick={() => navigate('/student/tasks')}
           className="inline-flex items-center gap-2 px-8 py-4 bg-white text-indigo-900 hover:bg-gray-100 rounded-xl font-semibold transition shadow-xl"
         >
           Открыть личный кабинет <ArrowRight size={18} />
