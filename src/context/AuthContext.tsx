@@ -63,7 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 				surname: data.surname,
 				name: data.name,
 				patronym: data.patronym || null,
-				birth_date: data.birth_date || null,
+				birth_date: data.birthDate || null,
 				email: data.email,
 				password: data.password,
 				timezone: data.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone
