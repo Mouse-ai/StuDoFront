@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createTask, createSubtask, getTasks, deleteTask, getAiKey, getAiModel, logAiRequest } from '../api/client';
+import { createTask, createSubtask, getTasks, deleteTask, getAiKey, getAiModel } from '../api/client';
 import type { Task } from '../types';
 import { Plus, Trash2, Calendar, Loader2, ArrowRight, AlertTriangle, Clock, Flag, Sparkles, Bot, Send, X, Check, ChevronLeft } from 'lucide-react';
 
@@ -23,25 +23,20 @@ export function TasksPage() {
 	const [modelName, setModelName] = useState('meta-llama/llama-3.3-70b-instruct');
 	const aiEndRef = useRef<HTMLDivElement>(null);
 
-	// 🔹 Инструмент ИИ с более строгим описанием
 	const AI_TOOLS = [
 		{
 			type: 'function' as const,
 			function: {
 				name: 'createTaskProposal',
-				description: 'Используй этот инструмент ТОЛЬКО когда у тебя есть Название, Дедлайн, Приоритет и Подзадачи. Он сформирует предложение для пользователя.',
+				description: 'Используй этот инструмент ТОЛЬКО когда у тебя есть Название, Дедлайн, Приоритет и Подзадачи.',
 				parameters: {
 					type: 'object',
 					properties: {
-						title: { type: 'string', description: 'Название задачи' },
-						description: { type: 'string', description: 'Описание задачи' },
-						deadline: { type: 'string', description: 'Дедлайн в формате YYYY-MM-DD' },
-						priority: { type: 'string', enum: ['low', 'medium', 'high'], description: 'Приоритет' },
-						subtasks: {
-							type: 'array',
-							items: { type: 'object', properties: { title: { type: 'string' } }, required: ['title'] },
-							description: 'Список подзадач'
-						}
+						title: { type: 'string' },
+						description: { type: 'string' },
+						deadline: { type: 'string' },
+						priority: { type: 'string', enum: ['low', 'medium', 'high'] },
+						subtasks: { type: 'array', items: { type: 'object', properties: { title: { type: 'string' } }, required: ['title'] } }
 					},
 					required: ['title', 'deadline', 'priority', 'subtasks']
 				}
@@ -60,6 +55,7 @@ export function TasksPage() {
 
 	useEffect(() => { loadTasks(); }, [loadTasks]);
 
+	// 🔹 Загружаем ключ и модель с сервера только при открытии AI-панели
 	useEffect(() => {
 		if (isDrawerOpen && drawerMode === 'ai' && aiMessages.length === 0) {
 			Promise.allSettled([getAiKey(), getAiModel()]).then(([k, m]) => {
@@ -71,7 +67,6 @@ export function TasksPage() {
 	}, [isDrawerOpen, drawerMode]);
 
 	useEffect(() => { aiEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [aiMessages, pendingProposal]);
-
 	useEffect(() => {
 		if (isDrawerOpen) { document.body.style.overflow = 'hidden'; return () => { document.body.style.overflow = ''; }; }
 	}, [isDrawerOpen]);
@@ -93,11 +88,12 @@ export function TasksPage() {
 	};
 
 	const handleAiSend = async () => {
-		if (!aiInput.trim() || aiLoading || pendingProposal) return;
+		if (!aiInput.trim() || aiLoading || pendingProposal || !apiKey) return;
 		const userMsg = { id: crypto.randomUUID(), role: 'user', content: aiInput };
 		setAiMessages(prev => [...prev, userMsg]);
 		setAiInput(''); setAiLoading(true);
 		const history = [...aiMessages.map(m => ({ role: m.role, content: m.content })), { role: 'user', content: userMsg.content }];
+
 		try {
 			const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
 				method: 'POST',
@@ -106,7 +102,6 @@ export function TasksPage() {
 					model: modelName,
 					messages: [
 						{
-							// 🔹 Обновленный строгий промпт
 							role: 'system',
 							content: 'Ты ассистент по планированию задач. Отвечай на двух языках: 🇷🇺 RU / 🇬🇧 EN. Твоя цель — собрать данные (Название, Дедлайн, Приоритет, Подзадачи) и вызвать инструмент createTaskProposal. НЕ пиши "готово" или план текстом. Как только данные собраны, ты ОБЯЗАН вызвать инструмент.'
 						},
@@ -117,10 +112,8 @@ export function TasksPage() {
 				})
 			});
 			const data = await res.json();
-			if (data.usage) logAiRequest({ model: modelName, promptTokens: data.usage.prompt_tokens, completionTokens: data.usage.completion_tokens, totalTokens: data.usage.total_tokens, status: 'success' });
 			const msg = data.choices?.[0]?.message;
 
-			// Проверяем вызов инструмента
 			if (msg?.tool_calls?.[0]) {
 				const args = JSON.parse(msg.tool_calls[0].function.arguments);
 				setPendingProposal(args);
@@ -128,9 +121,8 @@ export function TasksPage() {
 			} else {
 				setAiMessages(prev => [...prev, { id: crypto.randomUUID(), role: 'assistant', content: msg?.content || 'Готово.' }]);
 			}
-		} catch (err: any) {
-			logAiRequest({ model: modelName, status: 'error', errorMessage: err.message });
-			setAiMessages(prev => [...prev, { id: crypto.randomUUID(), role: 'assistant', content: 'Ошибка соединения.' }]);
+		} catch {
+			setAiMessages(prev => [...prev, { id: crypto.randomUUID(), role: 'assistant', content: 'Ошибка соединения с OpenRouter.' }]);
 		} finally { setAiLoading(false); }
 	};
 
@@ -267,8 +259,8 @@ export function TasksPage() {
 								</div>
 								<div className="pt-4 border-t border-gray-200 bg-white -mx-6 -mb-6 p-4">
 									<div className="flex items-center gap-2">
-										<input type="text" placeholder="Опиши задачу..." className="flex-1 p-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/40" value={aiInput} onChange={e => setAiInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleAiSend()} disabled={aiLoading || !!pendingProposal} />
-										<button onClick={handleAiSend} disabled={aiLoading || !!pendingProposal || !aiInput.trim()} className="p-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 disabled:opacity-50 transition">{aiLoading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}</button>
+										<input type="text" placeholder="Опиши задачу..." className="flex-1 p-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/40" value={aiInput} onChange={e => setAiInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleAiSend()} disabled={aiLoading || !!pendingProposal || !apiKey} />
+										<button onClick={handleAiSend} disabled={aiLoading || !!pendingProposal || !aiInput.trim() || !apiKey} className="p-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 disabled:opacity-50 transition">{aiLoading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}</button>
 									</div>
 								</div>
 							</div>
