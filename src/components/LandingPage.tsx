@@ -15,132 +15,129 @@ export function LandingPage() {
   };
 
   return (
-    // Убрал px-3, чтобы контролировать отступы внутри секций для идеального выравнивания
-    <div className="pt-24 sm:pt-28 pb-12 sm:pb-16 max-w-6xl mx-auto w-full px-4 sm:px-6">
-      
-      {/* HERO */}
-      <section className="text-center mb-12 sm:mb-20 w-full">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 sm:mb-6 leading-[1.15] sm:leading-tight">
-          Управляй дедлайнами.<br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">Делегируй рутину ИИ.</span>
-        </h1>
-        <p className="text-gray-600 max-w-2xl mx-auto text-base sm:text-lg md:text-xl mb-8 sm:mb-10 leading-relaxed">
-          StuDo — это не просто список задач. Это персональный учебный кабинет, где каждая задача помнит контекст,
-          прогресс считается автоматически, а напоминания приходят прямо в Telegram.
-        </p>
-        <button
-          onClick={handleNavigate}
-          className="inline-flex items-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold shadow-lg shadow-indigo-200/50 transition transform hover:scale-105 text-sm sm:text-base"
-        >
-          Начать бесплатно <ArrowRight size={18} />
-        </button>
-      </section>
-
-      {/* КАК РАБОТАЕТ */}
-      <section className="mb-12 sm:mb-20 w-full">
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-8 sm:mb-10">Как работает StuDo?</h2>
-        {/* grid-cols-1 на мобильном гарантирует одинаковую ширину для всех карточек */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 w-full">
-          {[
-            { step: '01', title: 'Создайте задачу', desc: 'Укажите предмет, дедлайн и приоритет. Система автоматически добавит её в календарь и расставит по важности.' },
-            { step: '02', title: 'Получите план от AI', desc: 'Встроенный ассистент разберёт тему, предложит структуру ответа, найдет формулы и поможет составить чек-лист.' },
-            { step: '03', title: 'Отслеживайте и сдавайте', desc: 'Прогресс обновляется в реальном времени. Если дедлайн близко — придёт мягкое напоминание в Telegram.' }
-          ].map((item, i) => (
-            <div key={i} className="relative p-5 sm:p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition w-full min-h-[180px] flex flex-col justify-center">
-              <span className="absolute top-3 left-4 text-5xl sm:text-6xl font-black text-indigo-50/80 select-none leading-none">
-                {item.step}
-              </span>
-              <div className="relative z-10 mt-8 sm:mt-0 text-center sm:text-left">
-                <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3">{item.title}</h3>
-                <p className="text-gray-600 text-sm sm:text-base leading-relaxed">{item.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ПОЧЕМУ ВЫБИРАЮТ */}
-      {/* ИСПРАВЛЕНИЕ: убрал горизонтальные отступы (p-5), оставил только вертикальные (py-8), 
-          чтобы карточки внутри были такой же ширины, как и в секции выше */}
-      <section className="mb-12 sm:mb-20 bg-gradient-to-br from-gray-50 to-indigo-50/30 rounded-3xl px-0 py-8 sm:py-12 w-full">
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-8 sm:mb-10 px-4 sm:px-0">Почему студенты выбирают StuDo?</h2>
+    <div className="pt-24 sm:pt-28 pb-12 sm:pb-16 w-full">
+      {/* Единый контейнер для всей страницы - одинаковые отступы везде */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 w-full">
         
-        {/* Добавил px-4 sm:px-8, чтобы карточки имели небольшие отступы от краев цветной подложки, но были широкими */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 w-full px-4 sm:px-8">
-          {[
-            { icon: <Bot size={22} />, title: 'Контекстный AI', desc: 'Каждая задача хранит отдельную историю чата. Ассистент помнит ваши формулы, заметки и стиль общения.' },
-            { icon: <Bell size={22} />, title: 'Telegram-уведомления', desc: 'Привяжите @username и получайте мягкие напоминания за 24ч и 2ч до дедлайна. Никакого спама.' },
-            { icon: <Calendar size={22} />, title: 'Умные дедлайны', desc: 'Система подсвечивает просроченные задачи, предлагает перенести загрузку и автоматически сортирует список по срочности.' },
-            { icon: <BarChart3 size={22} />, title: 'Прогресс по предметам', desc: 'Визуальная шкала успеваемости. Закрытие задач автоматически повышает процент готовности к экзамену.' },
-            { icon: <ShieldCheck size={22} />, title: 'Приватность и контроль', desc: 'JWT-аутентификация, шифрование сессий. Вы решаете, какие данные хранить, а какие очищать.' },
-            { icon: <Smartphone size={22} />, title: 'Работает везде', desc: 'Адаптивный интерфейс, поддержка свайпов, быстрый запуск. Учитесь с телефона, планшета или ноутбука.' }
-          ].map((f, i) => (
-            <div key={i} className="p-4 sm:p-5 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 w-full">
-              <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center mb-3 mx-auto sm:mx-0">{f.icon}</div>
-              <h3 className="text-base sm:text-lg font-bold mb-1.5 sm:mb-2 text-center sm:text-left">{f.title}</h3>
-              <p className="text-gray-600 text-xs sm:text-sm leading-relaxed text-center sm:text-left">{f.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+        {/* HERO */}
+        <section className="text-center mb-12 sm:mb-20 w-full">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 sm:mb-6 leading-[1.15] sm:leading-tight">
+            Управляй дедлайнами.<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">Делегируй рутину ИИ.</span>
+          </h1>
+          <p className="text-gray-600 max-w-2xl mx-auto text-base sm:text-lg md:text-xl mb-8 sm:mb-10 leading-relaxed">
+            StuDo — это не просто список задач. Это персональный учебный кабинет, где каждая задача помнит контекст,
+            прогресс считается автоматически, а напоминания приходят прямо в Telegram.
+          </p>
+          <button
+            onClick={handleNavigate}
+            className="inline-flex items-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold shadow-lg shadow-indigo-200/50 transition transform hover:scale-105 text-sm sm:text-base"
+          >
+            Начать бесплатно <ArrowRight size={18} />
+          </button>
+        </section>
 
-      {/* ДЕТАЛИ */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 md:gap-10 mb-12 sm:mb-20 w-full">
-        <div className="bg-white p-5 sm:p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm w-full">
-          <div className="flex items-center gap-3 mb-4">
-            <Sparkles className="text-amber-500 shrink-0" />
-            <h3 className="text-lg sm:text-xl font-bold">AI, который учится вместе с вами</h3>
-          </div>
-          <ul className="space-y-2.5 sm:space-y-3">
+        {/* КАК РАБОТАЕТ */}
+        <section className="mb-12 sm:mb-20 w-full">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-8 sm:mb-10">Как работает StuDo?</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 w-full">
             {[
-              'Изолированная память: чат не смешивается между задачами',
-              'Поддержка Markdown: формулы, списки, код, цитаты',
-              'Генерация чек-листов по темам и методичкам',
-              'Режим "Объясни как 5-летнему" для сложных тем'
-            ].map((t, i) => (
-              <li key={i} className="flex items-start gap-2 text-gray-700 text-sm sm:text-base">
-                <CheckCircle size={16} className="text-green-500 mt-1 shrink-0" />
-                <span>{t}</span>
-              </li>
+              { step: '01', title: 'Создайте задачу', desc: 'Укажите предмет, дедлайн и приоритет. Система автоматически добавит её в календарь и расставит по важности.' },
+              { step: '02', title: 'Получите план от AI', desc: 'Встроенный ассистент разберёт тему, предложит структуру ответа, найдет формулы и поможет составить чек-лист.' },
+              { step: '03', title: 'Отслеживайте и сдавайте', desc: 'Прогресс обновляется в реальном времени. Если дедлайн близко — придёт мягкое напоминание в Telegram.' }
+            ].map((item, i) => (
+              <div key={i} className="relative p-5 sm:p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition w-full min-h-[180px] flex flex-col justify-center">
+                <span className="absolute top-3 left-4 text-5xl sm:text-6xl font-black text-indigo-50/80 select-none leading-none">
+                  {item.step}
+                </span>
+                <div className="relative z-10 mt-8 sm:mt-0 text-center sm:text-left">
+                  <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3">{item.title}</h3>
+                  <p className="text-gray-600 text-sm sm:text-base leading-relaxed">{item.desc}</p>
+                </div>
+              </div>
             ))}
-          </ul>
-        </div>
-
-        <div className="bg-white p-5 sm:p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm w-full">
-          <div className="flex items-center gap-3 mb-4">
-            <MessageSquare className="text-blue-500 shrink-0" />
-            <h3 className="text-lg sm:text-xl font-bold">Интеграция с Telegram</h3>
           </div>
-          <ul className="space-y-2.5 sm:space-y-3">
-            {['Введите @username в профиле — бот запомнит вас',
-              'Уведомления приходят только когда они нужны',
-              'Переключатель `notifications` в один клик',
-              'Возможность отписаться или изменить частоту'
-            ].map((t, i) => (
-              <li key={i} className="flex items-start gap-2 text-gray-700 text-sm sm:text-base">
-                <CheckCircle size={16} className="text-blue-500 mt-1 shrink-0" />
-                <span>{t}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+        </section>
 
-      {/* CTA */}
-      <section className="text-center bg-gradient-to-br from-indigo-900 to-blue-900 rounded-2xl sm:rounded-3xl p-8 sm:p-10 md:p-14 text-white w-full">
-        <Clock size={32} className="mx-auto mb-4 text-indigo-200" />
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4">Хватит терять баллы из-за забытых дедлайнов</h2>
-        <p className="text-indigo-200 max-w-2xl mx-auto mb-6 sm:mb-8 text-base sm:text-lg px-2">
-          Перенесите все задачи в одно место. Пусть AI планирует, а вы — учитесь.
-        </p>
-        <button
-          onClick={handleNavigate}
-          className="inline-flex items-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 bg-white text-indigo-900 hover:bg-gray-100 rounded-xl font-semibold transition shadow-xl text-sm sm:text-base"
-        >
-          Открыть личный кабинет <ArrowRight size={18} />
-        </button>
-        <p className="mt-4 text-xs text-indigo-300">Регистрация занимает 30 секунд. Данные защищены.</p>
-      </section>
+        {/* ПОЧЕМУ ВЫБИРАЮТ - БЕЗ ДОПОЛНИТЕЛЬНЫХ ОТСТУПОВ */}
+        <section className="mb-12 sm:mb-20 bg-gradient-to-br from-gray-50 to-indigo-50/30 rounded-3xl p-6 sm:p-8 w-full">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-8 sm:mb-10">Почему студенты выбирают StuDo?</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 w-full">
+            {[
+              { icon: <Bot size={22} />, title: 'Контекстный AI', desc: 'Каждая задача хранит отдельную историю чата. Ассистент помнит ваши формулы, заметки и стиль общения.' },
+              { icon: <Bell size={22} />, title: 'Telegram-уведомления', desc: 'Привяжите @username и получайте мягкие напоминания за 24ч и 2ч до дедлайна. Никакого спама.' },
+              { icon: <Calendar size={22} />, title: 'Умные дедлайны', desc: 'Система подсвечивает просроченные задачи, предлагает перенести загрузку и автоматически сортирует список по срочности.' },
+              { icon: <BarChart3 size={22} />, title: 'Прогресс по предметам', desc: 'Визуальная шкала успеваемости. Закрытие задач автоматически повышает процент готовности к экзамену.' },
+              { icon: <ShieldCheck size={22} />, title: 'Приватность и контроль', desc: 'JWT-аутентификация, шифрование сессий. Вы решаете, какие данные хранить, а какие очищать.' },
+              { icon: <Smartphone size={22} />, title: 'Работает везде', desc: 'Адаптивный интерфейс, поддержка свайпов, быстрый запуск. Учитесь с телефона, планшета или ноутбука.' }
+            ].map((f, i) => (
+              <div key={i} className="p-4 sm:p-5 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 w-full">
+                <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center mb-3 mx-auto sm:mx-0">{f.icon}</div>
+                <h3 className="text-base sm:text-lg font-bold mb-1.5 sm:mb-2 text-center sm:text-left">{f.title}</h3>
+                <p className="text-gray-600 text-xs sm:text-sm leading-relaxed text-center sm:text-left">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ДЕТАЛИ */}
+        <section className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 mb-12 sm:mb-20 w-full">
+          <div className="bg-white p-5 sm:p-6 rounded-2xl border border-gray-200 shadow-sm w-full">
+            <div className="flex items-center gap-3 mb-4">
+              <Sparkles className="text-amber-500 shrink-0" />
+              <h3 className="text-lg sm:text-xl font-bold">AI, который учится вместе с вами</h3>
+            </div>
+            <ul className="space-y-2.5 sm:space-y-3">
+              {[
+                'Изолированная память: чат не смешивается между задачами',
+                'Поддержка Markdown: формулы, списки, код, цитаты',
+                'Генерация чек-листов по темам и методичкам',
+                'Режим "Объясни как 5-летнему" для сложных тем'
+              ].map((t, i) => (
+                <li key={i} className="flex items-start gap-2 text-gray-700 text-sm sm:text-base">
+                  <CheckCircle size={16} className="text-green-500 mt-1 shrink-0" />
+                  <span>{t}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="bg-white p-5 sm:p-6 rounded-2xl border border-gray-200 shadow-sm w-full">
+            <div className="flex items-center gap-3 mb-4">
+              <MessageSquare className="text-blue-500 shrink-0" />
+              <h3 className="text-lg sm:text-xl font-bold">Интеграция с Telegram</h3>
+            </div>
+            <ul className="space-y-2.5 sm:space-y-3">
+              {['Введите @username в профиле — бот запомнит вас',
+                'Уведомления приходят только когда они нужны',
+                'Переключатель `notifications` в один клик',
+                'Возможность отписаться или изменить частоту'
+              ].map((t, i) => (
+                <li key={i} className="flex items-start gap-2 text-gray-700 text-sm sm:text-base">
+                  <CheckCircle size={16} className="text-blue-500 mt-1 shrink-0" />
+                  <span>{t}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* CTA */}
+        <section className="text-center bg-gradient-to-br from-indigo-900 to-blue-900 rounded-2xl sm:rounded-3xl p-8 sm:p-10 text-white w-full">
+          <Clock size={32} className="mx-auto mb-4 text-indigo-200" />
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4">Хватит терять баллы из-за забытых дедлайнов</h2>
+          <p className="text-indigo-200 max-w-2xl mx-auto mb-6 sm:mb-8 text-base sm:text-lg">
+            Перенесите все задачи в одно место. Пусть AI планирует, а вы — учитесь.
+          </p>
+          <button
+            onClick={handleNavigate}
+            className="inline-flex items-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 bg-white text-indigo-900 hover:bg-gray-100 rounded-xl font-semibold transition shadow-xl text-sm sm:text-base"
+          >
+            Открыть личный кабинет <ArrowRight size={18} />
+          </button>
+          <p className="mt-4 text-xs text-indigo-300">Регистрация занимает 30 секунд. Данные защищены.</p>
+        </section>
+      </div>
     </div>
   );
 }
