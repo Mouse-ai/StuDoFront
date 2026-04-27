@@ -43,12 +43,13 @@ export function LandingPage() {
             { step: '02', title: 'Получите план от AI', desc: 'Встроенный ассистент разберёт тему, предложит структуру ответа, найдет формулы и поможет составить чек-лист.' },
             { step: '03', title: 'Отслеживайте и сдавайте', desc: 'Прогресс обновляется в реальном времени. Если дедлайн близко — придёт мягкое напоминание в Telegram.' }
           ].map((item, i) => (
-            <div key={i} className="relative p-5 sm:p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition group overflow-hidden">
-              <span className="absolute -top-2 -left-3 sm:-top-4 sm:-left-2 text-5xl sm:text-6xl md:text-7xl font-black text-indigo-50/60 group-hover:text-indigo-100/60 transition select-none leading-none">
+            <div key={i} className="relative p-5 sm:p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition min-h-[160px] sm:min-h-0 flex flex-col justify-between">
+              {/* Цифра теперь внутри, без выхода за границы */}
+              <span className="absolute top-3 left-4 text-4xl sm:text-5xl font-black text-indigo-50/80 select-none leading-none">
                 {item.step}
               </span>
-              <div className="relative z-10 mt-4 sm:mt-0">
-                <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 pr-2">{item.title}</h3>
+              <div className="relative z-10 mt-8 sm:mt-0">
+                <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 pr-12">{item.title}</h3>
                 <p className="text-gray-600 text-sm sm:text-base leading-relaxed">{item.desc}</p>
               </div>
             </div>
@@ -68,7 +69,7 @@ export function LandingPage() {
             { icon: <ShieldCheck size={22} />, title: 'Приватность и контроль', desc: 'JWT-аутентификация, шифрование сессий. Вы решаете, какие данные хранить, а какие очищать.' },
             { icon: <Smartphone size={22} />, title: 'Работает везде', desc: 'Адаптивный интерфейс, поддержка свайпов, быстрый запуск. Учитесь с телефона, планшета или ноутбука.' }
           ].map((f, i) => (
-            <div key={i} className="p-4 sm:p-5 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200">
+            <div key={i} className="p-4 sm:p-5 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 min-h-[140px] sm:min-h-0">
               <div className="w-9 h-9 sm:w-10 sm:h-10 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center mb-3">{f.icon}</div>
               <h3 className="text-base sm:text-lg font-bold mb-1.5 sm:mb-2">{f.title}</h3>
               <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">{f.desc}</p>
