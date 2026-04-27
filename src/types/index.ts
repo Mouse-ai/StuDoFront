@@ -76,6 +76,7 @@ export interface Task {
 	deadline: string | null;
 	priority: string | null;
 	status: string | null;
+	completedAt: string | null;
 }
 
 export interface AddTaskRequest {

@@ -1,6 +1,6 @@
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Users, LogOut, ChevronDown, User } from 'lucide-react';
+import { LayoutDashboard, Users, LogOut, ChevronDown, User, GraduationCap } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { useClickOutside } from '../hooks/useClickOutside';
 
@@ -15,6 +15,7 @@ export function AdminLayout() {
 	const routes = [
 		{ path: '/admin', label: 'Дашборд', icon: LayoutDashboard },
 		{ path: '/admin/users', label: 'Пользователи', icon: Users },
+		{ path: '/admin/courses', label: 'Курсы', icon: GraduationCap },
 		{ path: '/admin/profile', label: 'Профиль', icon: User },
 	];
 	const currentRoute = routes.find(r => r.path === location.pathname);

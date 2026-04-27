@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getAdminUsers, banUser, unbanUser } from '../api/client';
 import type { User } from '../types';
-import { Search, ArrowUpDown, ShieldBan, ShieldCheck } from 'lucide-react';
+import { Search, ArrowUpDown, ShieldBan, ShieldCheck, Bell, Send } from 'lucide-react';
 
 export function AdminUsers() {
 	const [users, setUsers] = useState<User[]>([]);
@@ -18,7 +18,7 @@ export function AdminUsers() {
 	}, [search]);
 
 	const handleBan = async (id: string) => {
-		const r = prompt('Причина:') || 'Нарушение';
+		const r = prompt('Причина блокировки:') || 'Забанен';
 		setActionLoading(id);
 		try {
 			await banUser(id, r);
@@ -48,12 +48,14 @@ export function AdminUsers() {
 
 			<div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
 				<div className="overflow-x-auto">
-					<table className="w-full text-left text-sm">
+					<table className="w-full text-left text-sm min-w-[900px]">
 						<thead className="bg-gray-50 border-b border-gray-200">
 							<tr>
 								<th className="px-4 py-3 font-medium text-gray-600 flex items-center gap-1">Пользователь <ArrowUpDown size={12} /></th>
 								<th className="px-4 py-3 font-medium text-gray-600">Email</th>
 								<th className="px-4 py-3 font-medium text-gray-600">Роль</th>
+								<th className="px-4 py-3 font-medium text-gray-600">Уведомления</th>
+								<th className="px-4 py-3 font-medium text-gray-600">Telegram</th>
 								<th className="px-4 py-3 font-medium text-gray-600">Статус</th>
 								<th className="px-4 py-3 font-medium text-gray-600">Действия</th>
 							</tr>
@@ -71,14 +73,24 @@ export function AdminUsers() {
 										</span>
 									</td>
 									<td className="px-4 py-3">
-										{u.isBanned ? (
-											<span className="inline-flex items-center gap-1.5 text-xs font-medium text-red-600">
-												<ShieldBan size={12} /> {u.banReason || 'Забанен'}
-											</span>
+										{u.notifications ? (
+											<span className="inline-flex items-center gap-1.5 text-xs font-medium text-green-600"><Bell size={12} /> Включено</span>
 										) : (
-											<span className="inline-flex items-center gap-1.5 text-xs font-medium text-green-600">
-												<ShieldCheck size={12} /> Активен
-											</span>
+											<span className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-400"><Bell size={12} /> Выключено</span>
+										)}
+									</td>
+									<td className="px-4 py-3">
+										{u.tgUsername ? (
+											<span className="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600"><Send size={12} /> @{u.tgUsername}</span>
+										) : (
+											<span className="text-xs text-gray-400">—</span>
+										)}
+									</td>
+									<td className="px-4 py-3">
+										{u.isBanned ? (
+											<span className="inline-flex items-center gap-1.5 text-xs font-medium text-red-600"><ShieldBan size={12} /> {u.banReason || 'Забанен'}</span>
+										) : (
+											<span className="inline-flex items-center gap-1.5 text-xs font-medium text-green-600"><ShieldCheck size={12} /> Активен</span>
 										)}
 									</td>
 									<td className="px-4 py-3">

@@ -1,6 +1,6 @@
 import { NavLink, Outlet, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { BookOpen, User, LogOut, ChevronDown } from 'lucide-react';
+import { BookOpen, User, LogOut, ChevronDown, GraduationCap } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { useClickOutside } from '../hooks/useClickOutside';
 
@@ -17,6 +17,7 @@ export function ProtectedLayout() {
 
 	const routes = [
 		{ path: '/student/tasks', label: 'Задачи', icon: BookOpen },
+		{ path: '/student/courses', label: 'Курсы', icon: GraduationCap },
 		{ path: '/student/profile', label: 'Профиль', icon: User },
 	];
 	const location = window.location.pathname;
@@ -25,6 +26,7 @@ export function ProtectedLayout() {
 
 	return (
 		<>
+			{/* 🔹 Плавающий сайдбар (не касается краёв) */}
 			<aside className="hidden md:flex fixed left-4 top-4 bottom-4 w-64 bg-white/90 backdrop-blur-xl border border-gray-200/50 rounded-2xl shadow-xl p-4 flex-col z-40">
 				<button onClick={() => navigate('/')} className="flex items-center gap-3 mb-6 hover:opacity-80 transition cursor-pointer px-2">
 					<div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold shrink-0">S</div>
@@ -44,14 +46,15 @@ export function ProtectedLayout() {
 				</div>
 			</aside>
 
+			{/* 🔹 Мобильная навигация */}
 			<div className="md:hidden fixed top-4 left-4 right-4 z-50 flex items-center gap-3 pointer-events-none">
 				<button onClick={() => navigate('/')} className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg pointer-events-auto active:scale-95 transition shrink-0">S</button>
 				<div ref={pillRef} className="flex-1 relative pointer-events-auto">
 					<button onClick={() => setIsOpen(!isOpen)} className="w-full flex items-center justify-between px-4 py-2.5 bg-white/85 backdrop-blur-xl border border-white/40 rounded-xl shadow-lg shadow-indigo-100/30 transition-all active:scale-[0.98]">
 						<span className="font-semibold text-gray-800 truncate">{displayLabel}</span>
-						<ChevronDown size={16} className={`text-gray-500 transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${isOpen ? 'rotate-180' : ''}`} />
+						<ChevronDown size={16} className={`text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
 					</button>
-					<div className={`absolute top-full left-0 right-0 mt-2 overflow-hidden rounded-xl bg-white/90 backdrop-blur-xl border border-white/40 shadow-xl z-50 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${isOpen ? 'max-h-64 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-2 pointer-events-none'}`}>
+					<div className={`absolute top-full left-0 right-0 mt-2 overflow-hidden rounded-xl bg-white/90 backdrop-blur-xl border border-white/40 shadow-xl z-50 transition-all duration-200 ${isOpen ? 'max-h-64 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-2 pointer-events-none'}`}>
 						<nav className="p-2 space-y-1">
 							{routes.map(route => (
 								<NavLink key={route.path} to={route.path} onClick={() => setIsOpen(false)} className={({ isActive }) =>
@@ -68,7 +71,10 @@ export function ProtectedLayout() {
 				</div>
 			</div>
 
-			<main className="md:pl-72 px-4 pt-20 md:pt-6 pb-8 min-h-screen"><Outlet /></main>
+			{/* 🔹 Main без принудительной ширины */}
+			<main className="md:pl-72 px-4 pt-20 md:pt-6 pb-8 min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50/40">
+				<Outlet />
+			</main>
 		</>
 	);
 }

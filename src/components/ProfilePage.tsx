@@ -34,17 +34,24 @@ export function ProfilePage() {
 		finally { setLoading(false); }
 	};
 
+	// Хелпер для безопасного получения строкового значения для инпутов
+	const getStringValue = (val: string | boolean | null | undefined) => {
+		if (typeof val === 'string') return val;
+		return '';
+	};
+
 	return (
 		<div className="max-w-2xl mx-auto">
 			<h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Настройки профиля</h2>
 			<form onSubmit={handleSubmit} className="bg-white p-4 sm:p-6 rounded-2xl border border-gray-200 shadow-sm space-y-5">
+
 				<fieldset className="space-y-4">
 					<legend className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Личные данные</legend>
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 						{['surname', 'name', 'patronym'].map(field => (
 							<div key={field} className="space-y-1">
 								<label className="text-sm font-medium text-gray-700">{field === 'surname' ? 'Фамилия' : field === 'name' ? 'Имя' : 'Отчество'}</label>
-								<input required={field !== 'patronym'} className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/40 focus:border-indigo-300 min-h-[44px]" value={form[field as keyof UpdateProfileRequest]?.toString() || ''} onChange={e => setForm({ ...form, [field]: e.target.value })} />
+								<input required={field !== 'patronym'} className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/40 focus:border-indigo-300 min-h-[44px]" value={getStringValue(form[field as keyof UpdateProfileRequest])} onChange={e => setForm({ ...form, [field]: e.target.value })} />
 							</div>
 						))}
 						<div className="space-y-1">
@@ -59,21 +66,42 @@ export function ProfilePage() {
 						</div>
 					</div>
 				</fieldset>
+
 				<fieldset className="space-y-4 pt-2 border-t border-gray-100">
 					<legend className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Безопасность</legend>
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-						<div className="space-y-1"><label className="text-sm font-medium text-gray-700">Email</label><input type="email" required className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/40 focus:border-indigo-300 min-h-[44px]" value={form.email || ''} onChange={e => setForm({ ...form, email: e.target.value })} /></div>
+						<div className="space-y-1"><label className="text-sm font-medium text-gray-700">Email</label><input type="email" required className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/40 focus:border-indigo-300 min-h-[44px]" value={getStringValue(form.email)} onChange={e => setForm({ ...form, email: e.target.value })} /></div>
 						<div className="space-y-1"><label className="text-sm font-medium text-gray-700">Новый пароль</label><input type="password" placeholder="Оставьте пустым" className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/40 focus:border-indigo-300 min-h-[44px]" value={form.password || ''} onChange={e => setForm({ ...form, password: e.target.value })} /></div>
 					</div>
 				</fieldset>
+
 				<fieldset className="space-y-4 pt-2 border-t border-gray-100">
 					<legend className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Уведомления</legend>
+
 					<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 rounded-xl border border-gray-200 gap-3">
 						<div className="flex items-center gap-3"><div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg shrink-0"><Bell size={18} /></div><div><p className="text-sm font-medium text-gray-800">Email-уведомления</p><p className="text-xs text-gray-500">Напоминания о дедлайнах</p></div></div>
-						<label className="relative inline-flex items-center cursor-pointer shrink-0"><input type="checkbox" className="sr-only peer" checked={form.notifications || false} onChange={e => setForm({ ...form, notifications: e.target.checked })} /><div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-1 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div></label>
+						{/* 👇 Исправлено: используем checked для чекбокса, а не value */}
+						<label className="relative inline-flex items-center cursor-pointer shrink-0">
+							<input type="checkbox" className="sr-only peer" checked={!!form.notifications} onChange={e => setForm({ ...form, notifications: e.target.checked })} />
+							<div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-1 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+						</label>
 					</div>
-					<div className="space-y-1"><label className="text-sm font-medium text-gray-700 flex items-center gap-2"><Send size={14} className="text-blue-500" /> Telegram username</label><div className="flex items-center gap-2"><span className="text-gray-400 text-sm pl-2">@</span><input placeholder="username" className="flex-1 p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/40 focus:border-indigo-300 min-h-[44px]" value={form.tgUsername || ''} onChange={e => setForm({ ...form, tgUsername: e.target.value.replace('@', '') })} /></div></div>
+
+					<div className="space-y-1">
+						<label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+							<Send size={14} className="text-blue-500" /> Telegram username
+						</label>
+						<div className="flex items-center gap-2">
+							<span className="text-gray-400 text-sm pl-2">@</span>
+							<input placeholder="username" className="flex-1 p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/40 focus:border-indigo-300 min-h-[44px]" value={getStringValue(form.tgUsername)} onChange={e => setForm({ ...form, tgUsername: e.target.value.replace('@', '') })} />
+						</div>
+						<p className="text-xs text-gray-500 flex items-start gap-1.5">
+							<Send size={12} className="shrink-0 mt-0.5" />
+							Чтобы бот отвечал, сначала напишите ему: <a href="https://t.me/stu_do_bot" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline font-medium">https://t.me/stu_do_bot</a>
+						</p>
+					</div>
 				</fieldset>
+
 				{success && <p className="text-green-600 text-sm text-center font-medium bg-green-50 py-2 rounded-lg">{success}</p>}
 				{error && <p className="text-red-500 text-sm text-center bg-red-50 py-2 rounded-lg">{error}</p>}
 				<button type="submit" disabled={loading} className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl text-sm font-medium transition flex items-center justify-center gap-2 shadow-md shadow-indigo-200/50 min-h-[48px]">{loading ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />} Сохранить изменения</button>

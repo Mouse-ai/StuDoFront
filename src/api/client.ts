@@ -35,8 +35,8 @@ export async function updateMe(data: UpdateProfileRequest) {
 export async function getAiKey() { return apiFetch<string>('/api/AI/key'); }
 export async function getAiModel() { return apiFetch<string>('/api/AI/model'); }
 
-export async function getTasks() { return apiFetch<Task[]>('/api/Tasks'); }
-export async function createTask(data: AddTaskRequest) { return apiFetch<Task>('/api/Tasks', { method: 'POST', body: JSON.stringify(data) }); }
+export async function getTasks() { return (await apiFetch<Task[]>('/api/Tasks')); }
+export async function createTask(data: AddTaskRequest) { return apiFetch<Task>('/api/Tasks/addtask', { method: 'POST', body: JSON.stringify(data) }); }
 export async function updateTask(id: string, data: AddTaskRequest) { return apiFetch(`/api/Tasks/${id}`, { method: 'PUT', body: JSON.stringify(data) }); }
 export async function deleteTask(id: string) { return apiFetch(`/api/Tasks/${id}`, { method: 'DELETE' }); }
 
@@ -46,7 +46,7 @@ export async function updateSubtask(id: string, data: Partial<Subtask>) { return
 export async function deleteSubtask(id: string) { return apiFetch(`/api/Subtasks/${id}`, { method: 'DELETE' }); }
 
 export async function getCourses() { return apiFetch<Course[]>('/api/Courses'); }
-export async function createCourse(data: Course) { return apiFetch<Course>('/api/Courses', { method: 'POST', body: JSON.stringify(data) }); }
+export async function createCourse(data: Partial<Course>) { return apiFetch<Course>('/api/Courses', { method: 'POST', body: JSON.stringify(data) }); }
 export async function updateCourse(id: string, data: Course) { return apiFetch(`/api/Courses/${id}`, { method: 'PUT', body: JSON.stringify(data) }); }
 export async function deleteCourse(id: string) { return apiFetch(`/api/Courses/${id}`, { method: 'DELETE' }); }
 
@@ -59,3 +59,30 @@ export async function getAdminAiUsage(days = 7) { return apiFetch(`/api/Admin/an
 export async function getAdminRoles() { return apiFetch('/api/Admin/analytics/roles'); }
 export async function banUser(id: string, reason: string) { return apiFetch(`/api/Admin/users/${id}/ban`, { method: 'PUT', body: JSON.stringify({ reason }) }); }
 export async function unbanUser(id: string) { return apiFetch(`/api/Admin/users/${id}/unban`, { method: 'PUT' }); }
+
+export async function logAiRequest(data: {
+	model: string;
+	promptTokens?: number;
+	completionTokens?: number;
+	totalTokens?: number;
+	status: 'success' | 'error' | 'fail';
+	taskId?: string;
+	errorMessage?: string;
+}) {
+	try {
+		await apiFetch('/api/AI/log', {
+			method: 'POST',
+			body: JSON.stringify({
+				model: data.model,
+				promptTokens: data.promptTokens,
+				completionTokens: data.completionTokens,
+				totalTokens: data.totalTokens,
+				status: data.status === 'error' ? 'fail' : data.status,
+				taskId: data.taskId,
+				errorMessage: data.errorMessage
+			})
+		});
+	} catch {
+		console.warn('AI log failed (non-critical)');
+	}
+}
