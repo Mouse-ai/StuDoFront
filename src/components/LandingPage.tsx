@@ -16,7 +16,6 @@ export function LandingPage() {
 
   return (
     <div className="pt-24 sm:pt-28 pb-12 sm:pb-16 w-full">
-      {/* Единый контейнер для всей страницы - одинаковые отступы везде */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 w-full">
         
         {/* HERO */}
@@ -46,11 +45,13 @@ export function LandingPage() {
               { step: '02', title: 'Получите план от AI', desc: 'Встроенный ассистент разберёт тему, предложит структуру ответа, найдет формулы и поможет составить чек-лист.' },
               { step: '03', title: 'Отслеживайте и сдавайте', desc: 'Прогресс обновляется в реальном времени. Если дедлайн близко — придёт мягкое напоминание в Telegram.' }
             ].map((item, i) => (
-              <div key={i} className="relative p-5 sm:p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition w-full min-h-[180px] flex flex-col justify-center">
-                <span className="absolute top-3 left-4 text-5xl sm:text-6xl font-black text-indigo-50/80 select-none leading-none">
+              <div key={i} className="relative p-6 sm:p-8 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition w-full min-h-[220px] sm:min-h-[200px] flex flex-col justify-center overflow-hidden">
+                {/* Фоновая цифра */}
+                <span className="absolute top-4 left-4 text-6xl sm:text-7xl font-black text-indigo-50/70 select-none leading-none">
                   {item.step}
                 </span>
-                <div className="relative z-10 mt-8 sm:mt-0 text-center sm:text-left">
+                {/* Контент с отступом, чтобы не наезжать на цифру */}
+                <div className="relative z-10 mt-20 sm:mt-24">
                   <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3">{item.title}</h3>
                   <p className="text-gray-600 text-sm sm:text-base leading-relaxed">{item.desc}</p>
                 </div>
@@ -59,7 +60,7 @@ export function LandingPage() {
           </div>
         </section>
 
-        {/* ПОЧЕМУ ВЫБИРАЮТ - БЕЗ ДОПОЛНИТЕЛЬНЫХ ОТСТУПОВ */}
+        {/* ПОЧЕМУ ВЫБИРАЮТ */}
         <section className="mb-12 sm:mb-20 bg-gradient-to-br from-gray-50 to-indigo-50/30 rounded-3xl p-6 sm:p-8 w-full">
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-8 sm:mb-10">Почему студенты выбирают StuDo?</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 w-full">
