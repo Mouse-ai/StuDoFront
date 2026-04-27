@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createTask, createSubtask, getTasks, deleteTask, getAiKey, getAiModel } from '../api/client';
+import { createTask, createSubtask, getTasks, deleteTask, getAiKey, getAiModel, logAiRequest } from '../api/client';
 import type { Task } from '../types';
 import { Plus, Trash2, Calendar, Loader2, ArrowRight, AlertTriangle, Clock, Flag, Sparkles, Bot, Send, X, Check, ChevronLeft } from 'lucide-react';
 
@@ -55,7 +55,6 @@ export function TasksPage() {
 
 	useEffect(() => { loadTasks(); }, [loadTasks]);
 
-	// 🔹 Загружаем ключ и модель с сервера только при открытии AI-панели
 	useEffect(() => {
 		if (isDrawerOpen && drawerMode === 'ai' && aiMessages.length === 0) {
 			Promise.allSettled([getAiKey(), getAiModel()]).then(([k, m]) => {
@@ -112,8 +111,19 @@ export function TasksPage() {
 				})
 			});
 			const data = await res.json();
-			const msg = data.choices?.[0]?.message;
 
+			// 🔹 Логирование успешного запроса
+			if (data.usage) {
+				logAiRequest({
+					model: modelName,
+					promptTokens: data.usage.prompt_tokens,
+					completionTokens: data.usage.completion_tokens,
+					totalTokens: data.usage.total_tokens,
+					status: 'success'
+				});
+			}
+
+			const msg = data.choices?.[0]?.message;
 			if (msg?.tool_calls?.[0]) {
 				const args = JSON.parse(msg.tool_calls[0].function.arguments);
 				setPendingProposal(args);
@@ -121,7 +131,9 @@ export function TasksPage() {
 			} else {
 				setAiMessages(prev => [...prev, { id: crypto.randomUUID(), role: 'assistant', content: msg?.content || 'Готово.' }]);
 			}
-		} catch {
+		} catch (err: any) {
+			// 🔹 Логирование ошибки запроса
+			logAiRequest({ model: modelName, status: 'fail', errorMessage: err.message });
 			setAiMessages(prev => [...prev, { id: crypto.randomUUID(), role: 'assistant', content: 'Ошибка соединения с OpenRouter.' }]);
 		} finally { setAiLoading(false); }
 	};

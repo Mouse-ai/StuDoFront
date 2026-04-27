@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { apiFetch, getAiKey, getAiModel, getSubtasks, createSubtask, updateSubtask, deleteSubtask } from '../api/client';
+import { apiFetch, getAiKey, getAiModel, getSubtasks, createSubtask, updateSubtask, deleteSubtask, updateTask } from '../api/client';
 import type { Task, Subtask } from '../types';
 import { ArrowLeft, Send, Plus, Trash2, Check, MessageSquare, Loader2, AlertCircle } from 'lucide-react';
 
@@ -53,8 +53,40 @@ export function TaskPage() {
 	};
 
 	const toggleSubtask = async (subId: string, current: boolean) => {
-		setSubtasks(prev => prev.map(s => s.id === subId ? { ...s, isCompleted: !current, updatedAt: new Date().toISOString() } : s));
-		try { await updateSubtask(subId, { isCompleted: !current }); } catch { }
+		// 1. Оптимистичное обновление локального стейта
+		const updatedSubtasks = subtasks.map(s =>
+			s.id === subId ? { ...s, isCompleted: !current, updatedAt: new Date().toISOString() } : s
+		);
+		setSubtasks(updatedSubtasks);
+
+		// 2. Синхронизация подзадачи с сервером
+		try {
+			await updateSubtask(subId, { isCompleted: !current });
+		} catch (err) {
+			console.error('Failed to toggle subtask:', err);
+		}
+
+		// 3. Вычисление общего статуса задачи
+		const allCompleted = updatedSubtasks.length > 0 && updatedSubtasks.every(s => s.isCompleted);
+		const newStatus = allCompleted ? 'done' : 'in_progress';
+
+		// 4. Если статус изменился → обновляем задачу на сервере
+		if (task && task.status !== newStatus) {
+			setTask(prev => prev ? { ...prev, status: newStatus } : null);
+
+			try {
+				await updateTask(task.id, {
+					title: task.title || '',
+					description: task.description,
+					deadline: task.deadline,
+					priority: task.priority,
+					status: newStatus
+				});
+			} catch (err) {
+				console.error('Failed to update task status:', err);
+				setTask(prev => prev ? { ...prev, status: task.status } : null);
+			}
+		}
 	};
 
 	const removeSubtask = async (subId: string) => {
