@@ -10,7 +10,6 @@ export function AdminLayout() {
 	const location = useLocation();
 	const [isOpen, setIsOpen] = useState(false);
 	const pillRef = useRef<HTMLDivElement>(null);
-
 	useClickOutside(pillRef, () => setIsOpen(false));
 
 	const routes = [
@@ -18,7 +17,6 @@ export function AdminLayout() {
 		{ path: '/admin/users', label: 'Пользователи', icon: Users },
 		{ path: '/admin/profile', label: 'Профиль', icon: User },
 	];
-
 	const currentRoute = routes.find(r => r.path === location.pathname);
 	const displayLabel = currentRoute?.label || 'Админ-панель';
 
@@ -31,22 +29,15 @@ export function AdminLayout() {
 				</button>
 				<nav className="flex-1 space-y-2">
 					{routes.map(route => (
-						<NavLink
-							key={route.path}
-							to={route.path}
-							end={route.path === '/admin'}
-							className={({ isActive }) =>
-								`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition ${isActive ? 'bg-indigo-600 text-white shadow-sm' : 'text-gray-300 hover:bg-gray-800'}`
-							}
-						>
+						<NavLink key={route.path} to={route.path} end={route.path === '/admin'} className={({ isActive }) =>
+							`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition ${isActive ? 'bg-indigo-600 text-white shadow-sm' : 'text-gray-300 hover:bg-gray-800'}`
+						}>
 							<route.icon size={18} /> {route.label}
 						</NavLink>
 					))}
 				</nav>
 				<div className="pt-4 border-t border-gray-700">
-					<button onClick={() => { logout(); navigate('/'); }} className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-sm font-medium text-red-400 hover:bg-gray-800 transition">
-						<LogOut size={18} /> Выйти
-					</button>
+					<button onClick={() => { logout(); navigate('/'); }} className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-sm font-medium text-red-400 hover:bg-gray-800 transition"><LogOut size={18} /> Выйти</button>
 				</div>
 			</aside>
 
@@ -60,31 +51,21 @@ export function AdminLayout() {
 					<div className={`absolute top-full left-0 right-0 mt-2 overflow-hidden rounded-xl bg-gray-900 shadow-xl z-50 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${isOpen ? 'max-h-64 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-2 pointer-events-none'}`}>
 						<nav className="p-2 space-y-1">
 							{routes.map(route => (
-								<NavLink
-									key={route.path}
-									to={route.path}
-									end={route.path === '/admin'}
-									onClick={() => setIsOpen(false)}
-									className={({ isActive }) =>
-										`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition ${isActive ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:bg-gray-800'}`
-									}
-								>
+								<NavLink key={route.path} to={route.path} end={route.path === '/admin'} onClick={() => setIsOpen(false)} className={({ isActive }) =>
+									`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition ${isActive ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:bg-gray-800'}`
+								}>
 									<route.icon size={16} /> {route.label}
 								</NavLink>
 							))}
 							<div className="border-t border-gray-700 mt-2 pt-2">
-								<button onClick={() => { logout(); navigate('/'); setIsOpen(false); }} className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-red-400 hover:bg-gray-800 rounded-lg transition">
-									<LogOut size={16} /> Выйти
-								</button>
+								<button onClick={() => { logout(); navigate('/'); setIsOpen(false); }} className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-red-400 hover:bg-gray-800 rounded-lg transition"><LogOut size={16} /> Выйти</button>
 							</div>
 						</nav>
 					</div>
 				</div>
 			</div>
 
-			<main className="md:pl-72 px-4 pt-20 md:pt-6 pb-8 min-h-screen bg-gray-50">
-				<Outlet />
-			</main>
+			<main className="md:pl-72 px-4 pt-20 md:pt-6 pb-8 min-h-screen bg-gray-50"><Outlet /></main>
 		</>
 	);
 }

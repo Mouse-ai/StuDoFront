@@ -9,7 +9,6 @@ export function ProtectedLayout() {
 	const navigate = useNavigate();
 	const [isOpen, setIsOpen] = useState(false);
 	const pillRef = useRef<HTMLDivElement>(null);
-
 	useClickOutside(pillRef, () => setIsOpen(false));
 
 	if (isLoading) return <div className="min-h-screen flex items-center justify-center text-gray-500">Загрузка...</div>;
@@ -20,14 +19,13 @@ export function ProtectedLayout() {
 		{ path: '/student/tasks', label: 'Задачи', icon: BookOpen },
 		{ path: '/student/profile', label: 'Профиль', icon: User },
 	];
-
 	const location = window.location.pathname;
 	const currentRoute = routes.find(r => r.path === location);
 	const displayLabel = currentRoute?.label || 'Меню';
 
 	return (
 		<>
-			<aside className="hidden md:flex fixed left-4 top-4 bottom-4 w-64 bg-white/90 backdrop-blur-xl border border-gray-200/50 rounded-2xl shadow-xl p-4 flex-col z-40 transition-all">
+			<aside className="hidden md:flex fixed left-4 top-4 bottom-4 w-64 bg-white/90 backdrop-blur-xl border border-gray-200/50 rounded-2xl shadow-xl p-4 flex-col z-40">
 				<button onClick={() => navigate('/')} className="flex items-center gap-3 mb-6 hover:opacity-80 transition cursor-pointer px-2">
 					<div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold shrink-0">S</div>
 					<h1 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-blue-500 truncate">StuDo</h1>
@@ -42,9 +40,7 @@ export function ProtectedLayout() {
 					))}
 				</nav>
 				<div className="pt-4 border-t border-gray-100 mt-auto">
-					<button onClick={() => { logout(); navigate('/'); }} className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 transition">
-						<LogOut size={18} /> Выйти
-					</button>
+					<button onClick={() => { logout(); navigate('/'); }} className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 transition"><LogOut size={18} /> Выйти</button>
 				</div>
 			</aside>
 
@@ -65,18 +61,14 @@ export function ProtectedLayout() {
 								</NavLink>
 							))}
 							<div className="border-t border-gray-100 mt-2 pt-2">
-								<button onClick={() => { logout(); navigate('/'); setIsOpen(false); }} className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition">
-									<LogOut size={16} /> Выйти
-								</button>
+								<button onClick={() => { logout(); navigate('/'); setIsOpen(false); }} className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition"><LogOut size={16} /> Выйти</button>
 							</div>
 						</nav>
 					</div>
 				</div>
 			</div>
 
-			<main className="md:pl-72 px-4 pt-20 md:pt-6 pb-8 min-h-screen">
-				<Outlet />
-			</main>
+			<main className="md:pl-72 px-4 pt-20 md:pt-6 pb-8 min-h-screen"><Outlet /></main>
 		</>
 	);
 }

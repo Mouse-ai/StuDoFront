@@ -1,14 +1,14 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import { apiFetch } from '../api/client';
-import type { User, RegisterRequest } from '../types';
+import { login, register, getMe } from '../api/client';
+import type { User, RegistrationRequest } from '../types';
 
 interface AuthContextType {
 	user: User | null;
 	isAuthenticated: boolean;
 	isLoading: boolean;
 	login: (email: string, password: string) => Promise<void>;
-	register: (data: RegisterRequest) => Promise<void>;
-	refreshUser: () => Promise<void>; // 👈 Новый метод
+	register: (data: RegistrationRequest) => Promise<void>;
+	refreshUser: () => Promise<void>;
 	logout: () => void;
 }
 
@@ -20,7 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 	const loadUser = async () => {
 		try {
-			const data = await apiFetch<User>('/api/Auth/me');
+			const data = await getMe();
 			setUser(data);
 		} catch {
 			localStorage.removeItem('token');
@@ -31,51 +31,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	};
 
 	useEffect(() => {
-		const token = localStorage.getItem('token');
-		if (token) loadUser();
+		if (localStorage.getItem('token')) loadUser();
 		else setIsLoading(false);
 	}, []);
 
 	const refreshUser = async () => {
-		try {
-			const data = await apiFetch<User>('/api/Auth/me');
-			setUser(data);
-		} catch (err) {
-			console.error('Failed to refresh user profile:', err);
-		}
+		try { setUser(await getMe()); } catch (err) { console.error(err); }
 	};
 
-	const login = async (email: string, password: string) => {
-		const res = await apiFetch<{ token?: string; accessToken?: string } | string>('/api/Auth/login', {
-			method: 'POST',
-			body: JSON.stringify({ email, password })
-		});
-		const token = typeof res === 'string' ? res : (res?.token || res?.accessToken);
-		if (!token) throw new Error('Токен не получен от сервера');
+	const handleLogin = async (email: string, password: string) => {
+		const deviceInfo = JSON.stringify({ ua: navigator.userAgent, lang: navigator.language, tz: Intl.DateTimeFormat().resolvedOptions().timeZone });
+		const token = await login({ email, password, deviceInfo });
 		localStorage.setItem('token', token);
 		await loadUser();
 	};
 
-	const register = async (data: RegisterRequest) => {
-		const res = await apiFetch<{ token?: string; accessToken?: string } | string>('/api/Auth/register', {
-			method: 'POST',
-			body: JSON.stringify({
-				surname: data.surname,
-				name: data.name,
-				patronym: data.patronym || null,
-				birth_date: data.birth_date || null,
-				email: data.email,
-				password: data.password,
-				timezone: data.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone
-			})
-		});
-		const token = typeof res === 'string' ? res : (res?.token || res?.accessToken);
-		if (token) {
-			localStorage.setItem('token', token);
-			await loadUser();
-		} else {
-			throw new Error('Регистрация успешна. Теперь войдите.');
-		}
+	const handleRegister = async (data: RegistrationRequest) => {
+		const deviceInfo = JSON.stringify({ ua: navigator.userAgent, lang: navigator.language, tz: Intl.DateTimeFormat().resolvedOptions().timeZone });
+		const payload = { ...data, deviceInfo };
+		const token = await register(payload);
+		localStorage.setItem('token', token);
+		await loadUser();
 	};
 
 	const logout = () => {
@@ -84,7 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	};
 
 	return (
-		<AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, login, register, refreshUser, logout }}>
+		<AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, login: handleLogin, register: handleRegister, refreshUser, logout }}>
 			{!isLoading && children}
 		</AuthContext.Provider>
 	);
